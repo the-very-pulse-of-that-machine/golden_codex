@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>至尊 Codex 皮肤面板</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-block">
+        <span class="brand-mark">C</span>
+        <div>
+          <h1 data-i18n="appTitle">至尊 Codex 皮肤面板</h1>
+          <p id="projectName">Codex Gold Reasoning Patch</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="button language" id="languageButton" type="button">English</button>
+        <span class="save-state" id="saveState" data-state="saved" data-i18n="saved">已保存</span>
+        <button class="button secondary" id="resetButton" type="button" data-i18n="reset">恢复默认</button>
+        <button class="button primary" id="saveButton" type="button" data-i18n="save">保存配置</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="effort-panel" aria-labelledby="effortTitle">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">EFFORT MAP</span>
+            <h2 id="effortTitle" data-i18n="effortMap">档位装扮</h2>
+          </div>
+          <span class="counter" id="enabledCount">0 / 7</span>
+        </div>
+        <div class="effort-list" id="effortList"></div>
+      </section>
+
+      <section class="editor-panel" aria-labelledby="editorTitle">
+        <div class="section-heading editor-heading">
+          <div>
+            <span class="eyebrow">THEME EDITOR</span>
+            <h2 id="editorTitle" data-i18n="themeEditor">主题编辑</h2>
+          </div>
+          <div class="theme-navigation">
+            <div class="theme-tabs" id="themeTabs" role="tablist"></div>
+            <div class="theme-actions">
+              <button type="button" id="duplicateTheme" data-i18n="duplicate">复制当前</button>
+              <button type="button" id="newTheme" data-i18n="newTheme">新建配色</button>
+              <button type="button" id="deleteTheme" data-i18n="delete">删除</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="preset-banner" id="presetBanner" data-i18n="builtinPreset">内置预设</div>
+        <div class="editor-content" id="editorContent">
+          <div class="field-row name-row">
+            <label for="themeName" data-i18n="themeName">主题名称</label>
+            <input id="themeName" type="text" maxlength="24" autocomplete="off">
+          </div>
+
+          <fieldset class="control-group">
+            <legend data-i18n="material">材质</legend>
+            <div class="segmented" id="materialControl">
+              <button type="button" data-material="polished" data-i18n="polished">镜面</button>
+              <button type="button" data-material="brushed" data-i18n="brushed">拉丝</button>
+              <button type="button" data-material="satin" data-i18n="satin">缎面</button>
+              <button type="button" data-material="carbon" data-i18n="carbon">碳纤维</button>
+            </div>
+          </fieldset>
+
+          <div class="color-grid" id="colorGrid"></div>
+
+          <div class="range-grid">
+            <label class="range-control" for="textureOpacity">
+              <span><b data-i18n="texture">纹理强度</b><output id="textureValue">0.22</output></span>
+              <input id="textureOpacity" type="range" min="0" max="0.6" step="0.01">
+            </label>
+            <label class="range-control" for="shineAngle">
+              <span><b data-i18n="shineAngle">光泽角度</b><output id="angleValue">115°</output></span>
+              <input id="shineAngle" type="range" min="0" max="360" step="1">
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-panel" aria-labelledby="previewTitle">
+        <div class="section-heading preview-heading">
+          <div>
+            <span class="eyebrow">LIVE PREVIEW</span>
+            <h2 id="previewTitle" data-i18n="preview">Codex 预览</h2>
+          </div>
+          <select id="previewEffort" aria-label="预览档位" data-i18n-aria="previewEffort"></select>
+        </div>
+
+        <div class="codex-preview" id="codexPreview">
+          <aside class="preview-sidebar">
+            <div class="preview-logo">C</div>
+            <span></span><span></span><span></span>
+          </aside>
+          <div class="preview-main">
+            <div class="preview-header">
+              <strong>Codex</strong>
+              <span id="previewBadge">xhigh · 鎏金</span>
+            </div>
+            <div class="preview-chat">
+              <div class="message user-message" data-i18n="previewUser">为当前任务整理实现方案</div>
+              <div class="message assistant-message">
+                <b data-i18n="previewPlan">实现计划</b>
+                <p data-i18n="previewAssistant">配置已读取，主题会随推理档位自动切换。</p>
+                <div class="code-line"></div>
+                <div class="code-line short"></div>
+              </div>
+            </div>
+            <div class="preview-composer">
+              <span data-i18n="previewPlaceholder">继续描述任务…</span>
+              <button type="button" aria-label="发送预览消息" data-i18n-aria="sendPreview">↑</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="build-note">
+          <span class="status-dot"></span>
+          <span data-i18n="syncNote">配置会同步到 Codex；保存后约 1.5 秒自动应用。</span>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="dashboard.js"></script>
+</body>
+</html>

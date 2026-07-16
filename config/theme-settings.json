@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "efforts": {
+    "minimal": "none",
+    "low": "none",
+    "medium": "carbon",
+    "high": "none",
+    "xhigh": "none",
+    "max": "gold",
+    "ultra": "gold"
+  },
+  "themes": {
+    "gold": {
+      "name": "鎏金",
+      "builtin": true,
+      "material": "polished",
+      "backgroundStart": "#6e4600",
+      "backgroundEnd": "#ffd866",
+      "surface": "#fff3b0",
+      "accent": "#d39b16",
+      "text": "#2d1d00",
+      "border": "#674300",
+      "textureOpacity": 0.22,
+      "shineAngle": 115
+    },
+    "silver": {
+      "name": "镜银",
+      "builtin": true,
+      "material": "polished",
+      "backgroundStart": "#30343a",
+      "backgroundEnd": "#eef2f5",
+      "surface": "#dfe5e9",
+      "accent": "#87939c",
+      "text": "#171a1d",
+      "border": "#626b72",
+      "textureOpacity": 0.16,
+      "shineAngle": 128
+    },
+    "copper": {
+      "name": "赤铜",
+      "builtin": true,
+      "material": "satin",
+      "backgroundStart": "#4b2116",
+      "backgroundEnd": "#e9a276",
+      "surface": "#d9855d",
+      "accent": "#a94f2d",
+      "text": "#25100a",
+      "border": "#713620",
+      "textureOpacity": 0.18,
+      "shineAngle": 102
+    },
+    "carbon": {
+      "name": "碳纤维",
+      "builtin": true,
+      "material": "carbon",
+      "backgroundStart": "#111315",
+      "backgroundEnd": "#4b5157",
+      "surface": "#25292d",
+      "accent": "#28c7b7",
+      "text": "#f2f5f6",
+      "border": "#5d666d",
+      "textureOpacity": 0.28,
+      "shineAngle": 135
+    }
+  }
+}

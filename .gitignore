@@ -1,0 +1,13 @@
+*.log
+*.exit
+artifacts/
+build/
+*.msix
+*.pfx
+*.cer
+.playwright-cli/
+output/
+work/
+__pycache__/
+*.pyc
+config/dashboard.pid

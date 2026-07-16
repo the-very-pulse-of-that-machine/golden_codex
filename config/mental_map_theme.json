@@ -1,0 +1,162 @@
+{
+  "project_profile": {
+    "identifier": "codex-gold-reasoning-patch",
+    "domain": "Windows Codex Desktop visual theming",
+    "summary": "Builds a signed MSIX whose embedded runtime selects a visual theme from the current reasoning effort.",
+    "dependencies": [
+      "PowerShell 5.1+",
+      "Node.js",
+      "codex-windows-fast-patch skill",
+      "Windows AppX deployment"
+    ]
+  },
+  "logic_entities": [
+    {
+      "entity_path": "scripts/build-patch.ps1",
+      "role_tag": "Core",
+      "entity_description": "Finds the Codex reasoning control, injects effort-aware JavaScript and generated CSS, then delegates safe ASAR/MSIX packaging.",
+      "interface_points": [
+        {
+          "name": "Invoke-GoldReasoningPatch",
+          "intent": "Turns the selected reasoning effort into a document theme state and appends matching CSS.",
+          "associated_vars": [
+            "Theme.EffortAssignments",
+            "Theme.Material",
+            "Theme.BackgroundStart",
+            "Theme.BackgroundEnd",
+            "Theme.AccentColor",
+            "Theme.TextColor",
+            "Theme.TextureOpacity",
+            "Theme.ShineAngle"
+          ]
+        }
+      ],
+      "tunable_nodes": [
+        {
+          "var_id": "Theme.EffortAssignments",
+          "source_line": 84,
+          "original_expression": "[\"xhigh\",\"max\",\"ultra\"].includes(effort)",
+          "data_type": "string",
+          "semantic_label": "档位装扮映射",
+          "functional_impact": "决定每个推理档位保持原样，还是切换到某个自定义主题。",
+          "constraints": {
+            "type": "options",
+            "values": ["none", "gold", "silver", "copper", "carbon", "custom"],
+            "default": "xhigh=gold,max=gold,ultra=gold"
+          }
+        },
+        {
+          "var_id": "Theme.Material",
+          "source_line": 141,
+          "original_expression": "linear-gradient(135deg, ...)",
+          "data_type": "string",
+          "semantic_label": "材质",
+          "functional_impact": "改变表面的反光方式和纹理节奏，让主题呈现抛光、拉丝、缎面或碳纤维质感。",
+          "constraints": {
+            "type": "options",
+            "values": ["polished", "brushed", "satin", "carbon"],
+            "default": "brushed"
+          }
+        },
+        {
+          "var_id": "Theme.BackgroundStart",
+          "source_line": 141,
+          "original_expression": "#6e4600",
+          "data_type": "string",
+          "semantic_label": "背景起始色",
+          "functional_impact": "控制页面大面积背景较暗的一端，影响主题的整体深浅。",
+          "constraints": {
+            "type": "none",
+            "values": "CSS color",
+            "default": "#6e4600"
+          }
+        },
+        {
+          "var_id": "Theme.BackgroundEnd",
+          "source_line": 141,
+          "original_expression": "#ffd866",
+          "data_type": "string",
+          "semantic_label": "背景高光色",
+          "functional_impact": "控制金属高光最明亮的颜色，直接改变视觉焦点。",
+          "constraints": {
+            "type": "none",
+            "values": "CSS color",
+            "default": "#ffd866"
+          }
+        },
+        {
+          "var_id": "Theme.AccentColor",
+          "source_line": 123,
+          "original_expression": "#d39b16",
+          "data_type": "string",
+          "semantic_label": "强调色",
+          "functional_impact": "改变按钮、边栏和输入区的主要装饰颜色。",
+          "constraints": {
+            "type": "none",
+            "values": "CSS color",
+            "default": "#d39b16"
+          }
+        },
+        {
+          "var_id": "Theme.TextColor",
+          "source_line": 129,
+          "original_expression": "#2d1d00",
+          "data_type": "string",
+          "semantic_label": "字体颜色",
+          "functional_impact": "改变正文、图标和按钮文字颜色，影响阅读对比度。",
+          "constraints": {
+            "type": "none",
+            "values": "CSS color",
+            "default": "#2d1d00"
+          }
+        },
+        {
+          "var_id": "Theme.TextureOpacity",
+          "source_line": 151,
+          "original_expression": ".22",
+          "data_type": "float",
+          "semantic_label": "纹理强度",
+          "functional_impact": "数值越高，拉丝和扫光纹理越明显；数值越低，表面越干净。",
+          "constraints": {
+            "type": "range",
+            "values": [0, 0.6],
+            "default": 0.22
+          }
+        },
+        {
+          "var_id": "Theme.ShineAngle",
+          "source_line": 153,
+          "original_expression": "115deg",
+          "data_type": "int",
+          "semantic_label": "光泽角度",
+          "functional_impact": "旋转金属高光的方向，让扫光从不同角度穿过页面。",
+          "constraints": {
+            "type": "range",
+            "values": [0, 360],
+            "default": 115
+          }
+        }
+      ]
+    }
+  ],
+  "execution_flow": {
+    "entry_command": "powershell -File scripts/build-patch.ps1 -BuildPackage -InstallPrerequisites",
+    "data_pipeline": [
+      {
+        "from": "config/theme-settings.json",
+        "to": "scripts/build-patch.ps1",
+        "description": "Loads effort assignments and material parameters selected in the dashboard."
+      },
+      {
+        "from": "scripts/build-patch.ps1",
+        "to": "Codex app.asar",
+        "description": "Generates effort-aware JavaScript and CSS, then injects them into a copied package."
+      },
+      {
+        "from": "patched app.asar",
+        "to": "signed MSIX",
+        "description": "Repackages the configured theme into an installable Codex revision."
+      }
+    ]
+  }
+}

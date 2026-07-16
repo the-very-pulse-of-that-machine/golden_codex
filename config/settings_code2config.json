@@ -1,0 +1,10 @@
+{
+  "Theme.EffortAssignments": "minimal=none,low=none,medium=none,high=none,xhigh=custom-2,max=custom-2,ultra=custom-2",
+  "Theme.Material": "polished",
+  "Theme.BackgroundStart": "#6e4600",
+  "Theme.BackgroundEnd": "#ffd866",
+  "Theme.AccentColor": "#d39b16",
+  "Theme.TextColor": "#1c1a17",
+  "Theme.TextureOpacity": 0.22,
+  "Theme.ShineAngle": 115
+}
