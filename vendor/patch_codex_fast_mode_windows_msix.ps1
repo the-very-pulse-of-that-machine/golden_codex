@@ -397,16 +397,22 @@ function Copy-FileDataOnly {
 function Copy-DirectoryDataOnly {
   param(
     [Parameter(Mandatory = $true)][string]$Source,
-    [Parameter(Mandatory = $true)][string]$Destination
+    [Parameter(Mandatory = $true)][string]$Destination,
+    [switch]$AllowMissing
   )
   if (-not (Test-Path -LiteralPath $Source -PathType Container)) {
+    if ($AllowMissing) {
+      Write-Log "warning: source directory disappeared during package copy; creating an empty destination: $Source"
+      [System.IO.Directory]::CreateDirectory((Convert-ToExtendedPath $Destination)) | Out-Null
+      return
+    }
     Fail "source directory not found: $Source"
   }
   [System.IO.Directory]::CreateDirectory((Convert-ToExtendedPath $Destination)) | Out-Null
   foreach ($item in Get-ChildItem -LiteralPath $Source -Force) {
     $target = Join-Path $Destination $item.Name
     if ($item.PSIsContainer -and (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -eq 0)) {
-      Copy-DirectoryDataOnly -Source $item.FullName -Destination $target
+      Copy-DirectoryDataOnly -Source $item.FullName -Destination $target -AllowMissing
     } elseif ($item.PSIsContainer) {
       Write-Log "warning: copying reparse directory as an empty directory: $($item.FullName)"
       [System.IO.Directory]::CreateDirectory((Convert-ToExtendedPath $target)) | Out-Null
