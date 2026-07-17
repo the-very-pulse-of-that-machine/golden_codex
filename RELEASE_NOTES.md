@@ -1,4 +1,8 @@
-# Codex Gold Reasoning Patch v1.0.3
+# Codex Gold Reasoning Patch v1.0.4
+
+- 修复部分 Windows PowerShell 5.1 环境复制 Codex 深层文件时出现的 `DirectoryNotFoundException`。
+- 使用更短的临时构建目录，避免传统 `MAX_PATH` 限制。
+- 底层流复制支持 Windows 扩展路径，可从中文或带空格的补丁目录启动。
 
 - Starts the local theme dashboard automatically at user login.
 - Starts the dashboard immediately when the patch runtime is installed or refreshed.

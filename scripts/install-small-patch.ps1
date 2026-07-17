@@ -13,7 +13,7 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $buildScript = Join-Path $PSScriptRoot 'build-patch.ps1'
 $installScript = Join-Path $PSScriptRoot 'install-patch.ps1'
-$buildRoot = Join-Path ([IO.Path]::GetTempPath()) ('codex-theme-small-patch-' + [guid]::NewGuid().ToString('N'))
+$buildRoot = Join-Path ([IO.Path]::GetTempPath()) ('ctp-' + [guid]::NewGuid().ToString('N').Substring(0, 8))
 
 function Fail {
   param([string]$Message)
@@ -33,7 +33,7 @@ function Clear-TemporaryBuild {
   if (-not $resolvedPath.StartsWith($temporaryRoot, [StringComparison]::OrdinalIgnoreCase)) {
     Fail "refusing to clean a build path outside the temporary directory: $resolvedPath"
   }
-  if ([IO.Path]::GetFileName($resolvedPath) -notlike 'codex-theme-small-patch-*') {
+  if ([IO.Path]::GetFileName($resolvedPath) -notlike 'ctp-*') {
     Fail "refusing to clean an unexpected build directory: $resolvedPath"
   }
   if (Test-Path -LiteralPath $resolvedPath -PathType Container) {

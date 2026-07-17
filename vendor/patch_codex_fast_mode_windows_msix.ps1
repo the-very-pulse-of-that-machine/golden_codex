@@ -360,15 +360,25 @@ function Require-WindowsSdkTool {
   return [string]$tool
 }
 
+function Convert-ToExtendedPath {
+  param([Parameter(Mandatory = $true)][string]$Path)
+  $fullPath = [System.IO.Path]::GetFullPath($Path)
+  if ($fullPath.StartsWith('\\?\')) { return $fullPath }
+  if ($fullPath.StartsWith('\\')) { return '\\?\UNC\' + $fullPath.Substring(2) }
+  return '\\?\' + $fullPath
+}
+
 function Copy-FileDataOnly {
   param(
     [Parameter(Mandatory = $true)][string]$Source,
     [Parameter(Mandatory = $true)][string]$Destination
   )
-  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $Destination) | Out-Null
-  $inputStream = [System.IO.File]::Open($Source, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete)
+  $sourcePath = Convert-ToExtendedPath $Source
+  $destinationPath = Convert-ToExtendedPath $Destination
+  [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($destinationPath)) | Out-Null
+  $inputStream = [System.IO.File]::Open($sourcePath, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete)
   try {
-    $outputStream = [System.IO.File]::Open($Destination, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::None)
+    $outputStream = [System.IO.File]::Open($destinationPath, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write, [System.IO.FileShare]::None)
     try {
       $inputStream.CopyTo($outputStream)
     } finally {
@@ -378,8 +388,7 @@ function Copy-FileDataOnly {
     $inputStream.Dispose()
   }
   try {
-    $sourceItem = Get-Item -LiteralPath $Source -Force
-    [System.IO.File]::SetLastWriteTimeUtc($Destination, $sourceItem.LastWriteTimeUtc)
+    [System.IO.File]::SetLastWriteTimeUtc($destinationPath, [System.IO.File]::GetLastWriteTimeUtc($sourcePath))
   } catch {
     Write-Log "warning: could not preserve timestamp for $Destination`: $($_.Exception.Message)"
   }
@@ -393,14 +402,14 @@ function Copy-DirectoryDataOnly {
   if (-not (Test-Path -LiteralPath $Source -PathType Container)) {
     Fail "source directory not found: $Source"
   }
-  New-Item -ItemType Directory -Force -Path $Destination | Out-Null
+  [System.IO.Directory]::CreateDirectory((Convert-ToExtendedPath $Destination)) | Out-Null
   foreach ($item in Get-ChildItem -LiteralPath $Source -Force) {
     $target = Join-Path $Destination $item.Name
     if ($item.PSIsContainer -and (($item.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -eq 0)) {
       Copy-DirectoryDataOnly -Source $item.FullName -Destination $target
     } elseif ($item.PSIsContainer) {
       Write-Log "warning: copying reparse directory as an empty directory: $($item.FullName)"
-      New-Item -ItemType Directory -Force -Path $target | Out-Null
+      [System.IO.Directory]::CreateDirectory((Convert-ToExtendedPath $target)) | Out-Null
     } else {
       Copy-FileDataOnly -Source $item.FullName -Destination $target
     }
